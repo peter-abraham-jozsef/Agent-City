@@ -4,10 +4,9 @@ import {ChatDemo} from '@/components/ChatDemo'
 function App() {
 
   return (
-    <>
-    <Page />
+    <Page >
     <ChatDemo />
-    </>
+    </Page>
   )
       
 }

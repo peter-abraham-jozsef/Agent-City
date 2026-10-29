@@ -11,12 +11,13 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
+import React, { Children } from "react";
 
-export default function Page() {
+export default function Page({children,}:{children?:React.ReactNode}) {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset>
+      <SidebarInset className="h-svh overflow-hidden">
         <header className="flex h-14 shrink-0 items-center gap-2">
           <div className="flex flex-1 items-center gap-2 px-3">
             <SidebarTrigger />
@@ -37,9 +38,8 @@ export default function Page() {
           <div className="ml-auto px-3">
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 px-4 py-10">
-          <div className="mx-auto h-24 w-full max-w-3xl rounded-xl bg-muted/50" />
-          <div className="mx-auto h-full w-full max-w-3xl rounded-xl bg-muted/50" />
+        <div className="flex min-h-0 flex-1 flex-col gap-4 px-4 py-10 overflow-hidden">
+          {children}
         </div>
       </SidebarInset>
     </SidebarProvider>
