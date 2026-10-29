@@ -5,6 +5,7 @@ import { useChat } from "@ai-sdk/react"
 import type { UIDataTypes, UIMessage } from "ai"
 import {
   ArrowUpIcon,
+  ChevronDownIcon,
   CircleCheckIcon,
   GlobeIcon,
   LoaderCircleIcon,
@@ -26,16 +27,18 @@ import { CodeBlock, CodeBlockContent } from "@/components/ui/code-block"
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
   Empty,
-  EmptyDescription,
   EmptyHeader,
   EmptyMedia,
-  EmptyTitle,
 } from "@/components/ui/empty"
 import {
   InputGroup,
@@ -67,6 +70,7 @@ import {
   TraceTitle,
 } from "@/components/ui/trace"
 
+import {ContextDemo} from "@/components/Context"
 type ChatMessage = UIMessage<
   unknown,
   UIDataTypes,
@@ -85,7 +89,7 @@ type ToolPart = Extract<ChatPart, { type: "tool-runCommand" }>
 const chat = createChat<ChatMessage>()
   .user("Add a dark mode toggle to the settings page.")
   .sleep(600)
-  .assistant(({ writer }) => {
+  .assistant(({ writer }: { writer: any }) => {
     writer.reasoning(
       "I need to know how themes are set up before I add a toggle. If next-themes is already in the layout, the toggle only has to call setTheme."
     )
@@ -99,8 +103,10 @@ const chat = createChat<ChatMessage>()
 
 **Changes**
 
-- Added \`components/mode-toggle.tsx\` with a Light and Dark option.
-- Put \`<ModeToggle />\` next to the Appearance heading in \`app/settings/page.tsx\`.
+- Added 
+\`components/mode-toggle.tsx\` with a Light and Dark option.
+- Put 
+\`<ModeToggle />\` next to the Appearance heading in \`app/settings/page.tsx\`.
 
 \`\`\`tsx
 const { setTheme } = useTheme()
@@ -109,7 +115,7 @@ const { setTheme } = useTheme()
   })
   .user("Make it follow the system setting by default.")
   .sleep(600)
-  .assistant(({ writer }) => {
+  .assistant(({ writer }: { writer: any }) => {
     writer.reasoning(
       "The default theme lives on the ThemeProvider. I should check what it is set to now."
     )
@@ -134,7 +140,7 @@ New visitors now get the theme from their OS. The toggle also has a **System** o
   })
   .user("Run the build before I ship it.")
   .sleep(600)
-  .assistant(({ writer }) => {
+  .assistant(({ writer }: { writer: any }) => {
     writer
       .tool("runCommand", { input: { command: "pnpm build" } })
       .sleep(1600)
@@ -151,12 +157,12 @@ New visitors now get the theme from their OS. The toggle also has a **System** o
 `)
   })
 
-const initialMessages = chat.get(0)
+const initialMessages = chat.get(0) as unknown as ChatMessage[]
 const transport = chat.transport({
   delayMs: 16,
   fallback:
     "This demo only knows the scripted turns. Press reset to start over.",
-})
+}) as any
 
 const MotionMessageScrollerItem = motion.create(MessageScrollerItem)
 
@@ -166,9 +172,11 @@ export function ChatDemo() {
     transport,
   })
   const [draft, setDraft] = React.useState<string | null>(null)
+  const [model, setModel] = React.useState<string>("gpt-5")
+  const [effort, setEffort] = React.useState<string>("medium")
   const formRef = React.useRef<HTMLFormElement>(null)
   const shouldReduceMotion = useReducedMotion()
-  const nextMessage = chat.next(messages)
+  const nextMessage = chat.next(messages as unknown as ChatMessage[])
   const busy = status === "submitted" || status === "streaming"
   const text = draft ?? (nextMessage ? getMessageText(nextMessage) : "")
   const canSend = text.trim().length > 0 && !busy
@@ -199,10 +207,22 @@ export function ChatDemo() {
               </div>
             </div>
             <Tooltip>
-              <TooltipTrigger render={<Button variant="outline" size="icon" aria-label="Reset conversation" onClick={() => {
+              <TooltipTrigger
+                render={
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    aria-label="Reset conversation"
+                    onClick={() => {
                       setMessages(initialMessages)
                       setDraft(null)
-                    }} disabled={busy}><RotateCwIcon /></Button>} />
+                    }}
+                    disabled={busy}
+                  >
+                    <RotateCwIcon />
+                  </Button>
+                }
+              />
               <TooltipContent>
                 <p>Reset</p>
               </TooltipContent>
@@ -215,11 +235,6 @@ export function ChatDemo() {
                   <EmptyMedia variant="icon">
                     <MessageCircleDashedIcon />
                   </EmptyMedia>
-                  <EmptyTitle>What should we build?</EmptyTitle>
-                  <EmptyDescription>
-                    The agent can read your code, run commands and make changes.
-                    Press send to start.
-                  </EmptyDescription>
                 </EmptyHeader>
               </Empty>
             ) : (
@@ -273,13 +288,13 @@ export function ChatDemo() {
                                   {steps.map((part, index) => (
                                     <StepRow
                                       key={index}
-                                      part={part}
+                                      part={part as ChatPart}
                                       streaming={streaming}
                                     />
                                   ))}
                                 </Trace>
                               )}
-                              {reply && <Markdown>{reply}</Markdown>}
+                              {reply && <Markdown content={reply} />}
                             </MessageContent>
                           </Message>
                         </MessageScrollerItem>
@@ -289,6 +304,8 @@ export function ChatDemo() {
                 </MessageScrollerViewport>
                 <MessageScrollerButton />
               </MessageScroller>
+
+              
             )}
           </div>
           <div className="p-8 pt-0">
@@ -309,7 +326,18 @@ export function ChatDemo() {
                 />
                 <InputGroupAddon align="block-end" className="pt-1">
                   <DropdownMenu>
-                    <DropdownMenuTrigger render={<InputGroupButton aria-label="Add context" type="button" size="icon-sm" variant="outline"><PlusIcon /></InputGroupButton>} />
+                    <DropdownMenuTrigger
+                      render={
+                        <InputGroupButton
+                          aria-label="Add context"
+                          type="button"
+                          size="icon-sm"
+                          variant="outline"
+                        >
+                          <PlusIcon />
+                        </InputGroupButton>
+                      }
+                    />
                     <DropdownMenuContent
                       align="start"
                       side="top"
@@ -330,6 +358,63 @@ export function ChatDemo() {
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
+
+                  {/* Model Selector */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={
+                        <InputGroupButton size="sm" variant="ghost">
+                          {model === "gpt-5-mini" ? "GPT-5 mini" : "GPT-5"}
+                          <ChevronDownIcon />
+                        </InputGroupButton>
+                      }
+                    />
+                    <DropdownMenuContent align="start">
+                      <DropdownMenuRadioGroup value={model} onValueChange={setModel}>
+                        <DropdownMenuGroup>
+                          <DropdownMenuLabel>OpenAI</DropdownMenuLabel>
+                          <DropdownMenuRadioItem value="gpt-5">
+                            GPT-5
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="gpt-5-mini">
+                            GPT-5 mini
+                          </DropdownMenuRadioItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+
+
+
+                  {/* Effort Selector */}
+                  <DropdownMenu>
+                    <DropdownMenuTrigger
+                      render={
+                        <InputGroupButton size="sm" variant="ghost">
+                          {effort.charAt(0).toUpperCase() + effort.slice(1)}
+                          <ChevronDownIcon />
+                        </InputGroupButton>
+                      }
+                    />
+                    <DropdownMenuContent align="start">
+                      <DropdownMenuRadioGroup value={effort} onValueChange={setEffort}>
+                        <DropdownMenuGroup>
+                          <DropdownMenuRadioItem value="low">
+                            Low
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="medium">
+                            Medium
+                          </DropdownMenuRadioItem>
+                          <DropdownMenuRadioItem value="high">
+                            High
+                          </DropdownMenuRadioItem>
+                        </DropdownMenuGroup>
+                      </DropdownMenuRadioGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <ContextDemo/>
+                  
+
                   <InputGroupButton
                     type="submit"
                     variant="default"

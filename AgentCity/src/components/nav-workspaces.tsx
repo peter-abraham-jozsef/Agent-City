@@ -34,11 +34,11 @@ export function NavWorkspaces({
     <SidebarGroup>
       <SidebarGroupLabel>Workspaces</SidebarGroupLabel>
       <SidebarGroupContent>
-        <SidebarMenu>
+        <SidebarMenu className="gap-1.5">
           {workspaces.map((workspace) => (
             <Collapsible key={workspace.name}>
               <SidebarMenuItem>
-                <SidebarMenuButton render={<a href="#" />}>
+                <SidebarMenuButton className="h-auto py-1" render={<a href="#" />}>
                   <a href="#">
                     <span>{workspace.emoji}</span>
                     <span>{workspace.name}</span>

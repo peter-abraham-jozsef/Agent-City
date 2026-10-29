@@ -7,11 +7,12 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "module": "nodenext",
+    "module": "ESNext",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
-    "moduleDetection": "force",
+    "moduleDetection": "auto",
     "noEmit": true,
+    
 
     /* Linting */
     "noUnusedLocals": true,

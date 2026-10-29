@@ -46,7 +46,7 @@ export function NavFavorites({
       <SidebarMenu className="gap-1.5">
         {favorites.map((item) => (
           <SidebarMenuItem key={item.name}>
-            <SidebarMenuButton className="h-auto py-1.5" render={<a href={item.url} title={item.name}></a>}>
+            <SidebarMenuButton className="h-auto py-1" render={<a href={item.url} title={item.name}></a>}>
                 <span className="shrink-0 text-base">{item.emoji}</span>
                 <span className="truncate leading-snug">{item.name}</span>
             </SidebarMenuButton>

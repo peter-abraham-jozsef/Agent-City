@@ -11,7 +11,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import React, { Children } from "react";
+import React from "react";
 
 export default function Page({children,}:{children?:React.ReactNode}) {
   return (
