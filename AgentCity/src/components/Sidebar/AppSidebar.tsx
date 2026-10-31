@@ -15,11 +15,11 @@ import {
   Trash2,
 } from "lucide-react"
 
-import { NavFavorites } from "@/components/nav-favorites"
-import { NavMain } from "@/components/nav-main"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavWorkspaces } from "@/components/nav-workspaces"
-import { TeamSwitcher } from "@/components/team-switcher"
+import { NavFavorites } from "@/components/Sidebar/NavFavorites"
+import { NavMain } from "@/components/Sidebar/NavMain"
+import { NavSecondary } from "@/components/Sidebar/NavSecondary"
+import { NavWorkspaces } from "@/components/Sidebar/NavWorkspaces"
+import { TeamSwitcher } from "@/components/Sidebar/TeamSwitcher"
 import {
   Sidebar,
   SidebarContent,

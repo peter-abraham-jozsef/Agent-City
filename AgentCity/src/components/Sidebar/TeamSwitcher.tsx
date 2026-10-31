@@ -19,9 +19,9 @@ import {
 } from "@/components/ui/sidebar"
 
 export function TeamSwitcher({
-  teams,
+  teams=[],
 }: {
-  teams: {
+  teams?: {
     name: string
     logo: React.ElementType
     plan: string

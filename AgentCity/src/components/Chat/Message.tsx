@@ -10,7 +10,7 @@ import {
   ThumbsUpIcon,
 } from "lucide-react"
 
-import { Markdown } from "@/components/markdown"
+import { Markdown } from "@/components/Chat/Markdown"
 import { Bubble, BubbleContent } from "@/components/ui/bubble"
 import { Button } from "@/components/ui/button"
 import {
